@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useHoverCursor } from './CustomCursor.jsx';
-import FlameMark from './FlameMark.jsx';
+import logoUrl from '../assets/medwell-logo.png';
 
 const INSTAGRAM_URL = 'https://www.instagram.com/medwell.at.ucsd/';
 const LINKTREE_URL = 'https://linktr.ee/medwellucsd';
@@ -24,14 +24,21 @@ export default function Navbar() {
       className="fixed inset-x-0 top-0 z-40"
     >
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 md:px-10 md:py-7">
-        {/* Left: stylized flame logo placeholder. */}
+        {/* Left: circular MEDWELL medallion. */}
         <a
           href="#top"
           {...logoHover}
           className="group flex items-center gap-3"
           aria-label="MEDWELL home"
         >
-          <FlameMark size={28} className="transition-transform group-hover:scale-110" />
+          <img
+            src={logoUrl}
+            alt="MEDWELL — medicine & wellness collective"
+            width={40}
+            height={40}
+            draggable={false}
+            className="h-10 w-10 select-none rounded-full shadow-sm ring-1 ring-ink/5 transition-transform duration-300 group-hover:scale-105"
+          />
           <span className="font-serif text-xl tracking-[0.28em] text-ink/90">
             MEDWELL
           </span>
