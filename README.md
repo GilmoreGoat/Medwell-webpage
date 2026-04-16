@@ -27,14 +27,13 @@ src/
   index.css                   Tailwind + mesh-sunset background + cursor CSS var
   context/CursorContext.jsx   Cursor hover + intensity state (scroll-dimmable)
   components/
-    LoadingScreen.jsx         Dusk-blue splash, flame draw-in, upward wipe
+    LoadingScreen.jsx         Dusk-blue splash, medallion reveal, upward wipe
     Navbar.jsx                Transparent minimal nav (logo + socials + Join Us)
     Hero.jsx                  Headline + subhead + "Join the Collective" CTA
-    FlameMark.jsx             Inline animatable flame SVG
     CustomCursor.jsx          Spring-followed flame cursor + useHoverCursor hook
   assets/
-    cursor-flame.svg          Replace with your own cursor asset
-    flame-logo.svg            Replace with your own logo asset
+    cursor-flame.svg          Flame cursor — replace with your own asset
+    medwell-logo.png          MEDWELL medallion used in nav + splash
 public/
   favicon.svg
 ```
@@ -43,8 +42,8 @@ public/
 
 - **Cursor image** — replace `src/assets/cursor-flame.svg` with any SVG/PNG.
   The import in `CustomCursor.jsx` stays the same.
-- **Logo** — replace `src/assets/flame-logo.svg`, or edit the inline path in
-  `FlameMark.jsx` (inline is required for the self-drawing animation).
+- **Brand logo** — replace `src/assets/medwell-logo.png`. Both `Navbar.jsx`
+  and `LoadingScreen.jsx` import this path.
 
 ### Scroll-linked cursor
 
