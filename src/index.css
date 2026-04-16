@@ -36,98 +36,51 @@ select {
   cursor: none;
 }
 
-/* ---------- Sunset sky ---------- */
-/* Real atmospheric sunset: twilight-purple crown, magenta/coral midband,
-   amber/gold horizon. Built from three stacked layers so we can animate
-   subtle drift without touching the overall sky structure.
+/* ---------- Hero sunset photo ---------- */
+/* Slow ken-burns pan on the background photograph so it breathes without
+   distracting from the content. Scaled slightly >100% so the pan never
+   exposes an edge of the frame. */
+.sunset-pan {
+  transform-origin: 55% 60%;
+  animation: sunset-pan 48s ease-in-out infinite alternate;
+}
 
-   1. `.sunset-sky` — base vertical sky gradient.
-   2. `.sunset-sky::before` — horizon sun glow (slow lateral drift).
-   3. `.sunset-sky::after` — soft horizontal atmospheric bands (parallax feel).
-*/
-.sunset-sky {
-  position: relative;
-  isolation: isolate;
+@keyframes sunset-pan {
+  0% {
+    transform: scale(1.08) translate3d(0, 0, 0);
+  }
+  100% {
+    transform: scale(1.14) translate3d(-1.5%, -1.2%, 0);
+  }
+}
+
+/* Scrim above the photo. Vignettes the top so the cream navbar reads over
+   pale clouds, and lifts the midband slightly so the dark water strip near
+   the horizon doesn't swallow the headline's descenders. Warm tint rather
+   than neutral black keeps the sunset mood intact. */
+.hero-scrim {
   background:
+    /* Top vignette for navbar legibility over bright/cloudy sky */
     linear-gradient(
       180deg,
-      #2E1D3F 0%,     /* deep plum — only the very crown */
-      #5C2A5F 8%,     /* dusk magenta */
-      #8E3369 20%,    /* pink */
-      #C85368 35%,    /* coral-red */
-      #E87A5A 50%,    /* warm coral */
-      #F59A6A 65%,    /* soft orange */
-      #F9C085 78%,    /* amber */
-      #FCDFA8 90%,    /* pale gold */
-      #FDEAC0 100%    /* horizon cream */
-    );
-}
-
-/* Warm sun glow hugging the horizon — slow lateral drift for life. */
-.sunset-sky::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background:
-    radial-gradient(
-      ellipse 70% 40% at 60% 88%,
-      rgba(255, 228, 160, 0.85) 0%,
-      rgba(255, 180, 120, 0.55) 22%,
-      rgba(255, 120, 120, 0.25) 48%,
-      transparent 72%
+      rgba(46, 29, 63, 0.35) 0%,
+      rgba(46, 29, 63, 0.12) 14%,
+      transparent 28%
     ),
-    radial-gradient(
-      ellipse 40% 25% at 62% 92%,
-      rgba(255, 245, 210, 0.9) 0%,
-      rgba(255, 210, 140, 0.6) 35%,
-      transparent 65%
+    /* Bottom vignette — subtle, keeps scroll indicator + meta readable */
+    linear-gradient(
+      0deg,
+      rgba(46, 29, 63, 0.28) 0%,
+      rgba(46, 29, 63, 0.08) 18%,
+      transparent 38%
+    ),
+    /* Global warm sit-down: slight warmth tilt for cohesion */
+    linear-gradient(
+      180deg,
+      rgba(255, 120, 120, 0.05) 0%,
+      rgba(255, 170, 100, 0.04) 50%,
+      rgba(255, 120, 120, 0.05) 100%
     );
-  animation: sunset-drift 28s ease-in-out infinite alternate;
-}
-
-/* Thin atmospheric bands — give the sky stratified haze like real dusk. */
-.sunset-sky::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    linear-gradient(180deg, transparent 45%, rgba(255, 180, 130, 0.12) 55%, transparent 65%),
-    linear-gradient(180deg, transparent 62%, rgba(255, 220, 160, 0.1) 72%, transparent 82%),
-    linear-gradient(180deg, transparent 30%, rgba(154, 58, 107, 0.08) 38%, transparent 50%);
-  mix-blend-mode: screen;
-  animation: sunset-haze 36s ease-in-out infinite alternate;
-}
-
-@keyframes sunset-drift {
-  0% { background-position: 0% 0%, 0% 0%; }
-  100% { background-position: 6% -4%, -4% 2%; }
-}
-
-@keyframes sunset-haze {
-  0% { transform: translate3d(0, 0, 0); opacity: 0.9; }
-  100% { transform: translate3d(0, -8px, 0); opacity: 1; }
-}
-
-/* Soft text-safe wash — a gentle cream haze that peaks in the region
-   where headline/subhead live, so dark ink text reads cleanly without
-   losing the sunset colors at the top and bottom of the frame. */
-.sunset-readable::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(253, 239, 201, 0) 0%,
-    rgba(253, 239, 201, 0.12) 30%,
-    rgba(253, 239, 201, 0.22) 50%,
-    rgba(253, 239, 201, 0.12) 72%,
-    rgba(253, 239, 201, 0) 100%
-  );
-  pointer-events: none;
-  mix-blend-mode: soft-light;
 }
 
 /* ---------- Selection ---------- */
