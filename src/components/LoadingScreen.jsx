@@ -109,9 +109,13 @@ export default function LoadingScreen() {
               key={i}
               style={{
                 lineHeight: 1,
-                paddingTop: '0.12em',
-                paddingBottom: '0.2em',
-                clipPath: 'inset(0 -0.35em)',
+                paddingTop: '0.15em',
+                paddingBottom: '0.25em',
+                // Only mask the BOTTOM edge (so the letter is hidden
+                // while translated below the wrapper) — leave top /
+                // left / right wide open so italic Fraunces side
+                // strokes and overshoots never collide with the clip.
+                clipPath: 'inset(-2em -2em 0 -2em)',
               }}
             >
               <motion.span
