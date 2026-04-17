@@ -95,14 +95,29 @@ export default function LoadingScreen() {
           UC San Diego
         </motion.p>
 
-        {/* MEDWELL — each letter rises from behind a clip */}
+        {/* MEDWELL — each letter rises from behind a clip.
+            Clip wrappers need vertical breathing room because italic
+            Fraunces glyphs overshoot the baseline (and their side
+            bearings extend past the em-box); a tight line-height with
+            `overflow: hidden` was shearing the bottoms off. We give
+            each wrapper generous em-based padding and use `clip-path`
+            with negative horizontal insets so the reveal still masks
+            the rise vertically without chopping italic side strokes. */}
         <div className="flex items-end" style={{ gap: '0.01em' }}>
           {LETTERS.map((letter, i) => (
-            <div key={i} className="overflow-hidden" style={{ lineHeight: 0.85 }}>
+            <div
+              key={i}
+              style={{
+                lineHeight: 1,
+                paddingTop: '0.12em',
+                paddingBottom: '0.2em',
+                clipPath: 'inset(0 -0.35em)',
+              }}
+            >
               <motion.span
                 className="block font-serif font-light italic tracking-tightest text-cream"
-                style={{ fontSize: 'clamp(4.5rem, 13vw, 9.5rem)' }}
-                initial={{ y: '105%' }}
+                style={{ fontSize: 'clamp(4.5rem, 13vw, 9.5rem)', lineHeight: 1 }}
+                initial={{ y: '115%' }}
                 animate={{ y: 0 }}
                 transition={{
                   duration: 1,

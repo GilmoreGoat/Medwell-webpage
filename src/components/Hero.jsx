@@ -73,19 +73,34 @@ export default function Hero() {
 
           {/* Headline — cream on sunset reads cinematic; drop shadow guarantees
               contrast over the photo's bright & dark bands. */}
+          {/* Each line uses a clip-path mask so the word can rise from
+              behind a horizontal edge WITHOUT shearing italic side
+              strokes or descender overshoots. `overflow: hidden` clips
+              all four sides (chopping the 'g' tail on 'grind', the 'R'
+              swash on 'Redefining', the italic apostrophes, etc.);
+              `clip-path: inset(0 -1em -0.1em -1em)` only masks the top
+              and leaves generous room below + on the sides. Leading is
+              also loosened from 0.95 → 1.02 so descenders don't collide
+              with the next line. */}
           <motion.h1
             variants={headlineContainer}
             initial="hidden"
             animate="show"
-            className="max-w-[18ch] font-serif font-light leading-[0.95] tracking-tightest text-cream drop-shadow-[0_2px_24px_rgba(46,29,63,0.35)]"
-            style={{ fontSize: 'clamp(2.75rem, 9vw, 8.5rem)' }}
+            className="max-w-[18ch] font-serif font-light tracking-tightest text-cream drop-shadow-[0_2px_24px_rgba(46,29,63,0.35)]"
+            style={{ fontSize: 'clamp(2.75rem, 9vw, 8.5rem)', lineHeight: 1.02 }}
           >
-            <span className="block overflow-hidden pb-2">
+            <span
+              className="block"
+              style={{ clipPath: 'inset(-0.05em -1em 0 -1em)', paddingBottom: '0.1em' }}
+            >
               <motion.span variants={headlineWord} className="inline-block">
                 Redefining
               </motion.span>
             </span>
-            <span className="block overflow-hidden pb-2">
+            <span
+              className="block"
+              style={{ clipPath: 'inset(-0.05em -1em 0 -1em)', paddingBottom: '0.18em' }}
+            >
               <motion.span variants={headlineWord} className="inline-block">
                 the <em className="font-serif italic text-cream/90">‘pre-med grind’</em>.
               </motion.span>
