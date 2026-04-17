@@ -72,8 +72,9 @@ export default function News() {
         lead="Announcements, recaps, and the quieter moments that make MEDWELL feel like a collective."
       />
 
-      <section className="relative bg-cream pb-28 pt-20 text-ink md:pb-40 md:pt-28">
-        <div className="mx-auto w-full max-w-7xl px-6 md:px-10">
+      <section className="warm-bg pb-28 pt-20 text-ink md:pb-40 md:pt-28">
+        <div aria-hidden className="warm-grain" />
+        <div className="warm-content mx-auto w-full max-w-7xl px-6 md:px-10">
           <div className="grid gap-10 md:grid-cols-2 md:gap-x-12 md:gap-y-16">
             {ARTICLES.map((article, i) => (
               <ArticleCard key={article.id} article={article} index={i} />

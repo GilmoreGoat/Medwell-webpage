@@ -111,8 +111,9 @@ export default function Events() {
         lead="Everything we're hosting this quarter — mixers, movement, service, and the conversations that keep us grounded."
       />
 
-      <section className="relative bg-cream pb-28 pt-20 text-ink md:pb-40 md:pt-28">
-        <div className="mx-auto w-full max-w-7xl px-6 md:px-10">
+      <section className="warm-bg pb-28 pt-20 text-ink md:pb-40 md:pt-28">
+        <div aria-hidden className="warm-grain" />
+        <div className="warm-content mx-auto w-full max-w-7xl px-6 md:px-10">
           <FilterRow filter={filter} setFilter={setFilter} />
 
           {visible.length === 0 ? (

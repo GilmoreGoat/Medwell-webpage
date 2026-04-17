@@ -3,10 +3,10 @@ import { motion } from 'framer-motion';
 /**
  * About
  *
- * Editorial "What is MEDWELL" section that follows the hero. Calm cream
- * background so the eye can rest after the sunset photograph. Copy is
- * distilled from the org's mission deck + Instagram bio — leading with a
- * conviction line, then the mission paragraph, closing on the tagline.
+ * "What is MEDWELL" — editorial section that sits on the warm-bg wash so
+ * the page breathes between hero photo and the pillar stage below. A
+ * huge italic watermark floats behind the content to give the layout a
+ * modern, zine-like rhythm instead of a flat brochure.
  */
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -20,14 +20,25 @@ const stagger = {
 
 export default function About() {
   return (
-    <section id="about" className="relative bg-cream text-ink">
-      {/* Subtle top gradient so the transition from the dark hero feels intentional. */}
+    <section id="about" className="warm-bg text-ink">
+      <div aria-hidden className="warm-grain" />
+
+      {/* Transition from the dark hero — vignette lives above the blobs. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-ink/20 to-transparent"
+        className="pointer-events-none absolute inset-x-0 top-0 z-[3] h-24 bg-gradient-to-b from-ink/20 to-transparent"
       />
 
-      <div className="relative mx-auto w-full max-w-7xl px-6 py-28 md:px-10 md:py-40">
+      {/* Huge italic watermark, tucked to the right. Hidden on small screens
+          so it never crowds the copy. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-6 top-16 z-[1] hidden select-none font-serif text-[22vw] italic leading-none tracking-tightest text-ink/[0.045] md:block"
+      >
+        medwell
+      </div>
+
+      <div className="warm-content mx-auto w-full max-w-7xl px-6 py-28 md:px-10 md:py-40">
         <motion.div
           variants={stagger}
           initial="hidden"
@@ -35,7 +46,7 @@ export default function About() {
           viewport={{ once: true, margin: '-15%' }}
           className="grid gap-16 md:grid-cols-12 md:gap-x-12"
         >
-          {/* Eyebrow + heading — left column on desktop */}
+          {/* Eyebrow + heading */}
           <div className="md:col-span-5">
             <motion.p
               variants={fadeUp}
@@ -55,7 +66,7 @@ export default function About() {
             </motion.h2>
           </div>
 
-          {/* Body copy — right column */}
+          {/* Body copy */}
           <motion.div
             variants={fadeUp}
             className="space-y-6 font-sans text-base leading-relaxed text-ink/80 md:col-span-6 md:col-start-7 md:text-lg"
@@ -78,7 +89,7 @@ export default function About() {
           </motion.div>
         </motion.div>
 
-        {/* Pull-quote — the mission line, given breathing room. */}
+        {/* Pull-quote */}
         <motion.blockquote
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
