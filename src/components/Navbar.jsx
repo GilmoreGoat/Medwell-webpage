@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { Link, useLocation } from 'react-router-dom';
 import { useHoverCursor } from './CustomCursor.jsx';
 import logoUrl from '../assets/medwell-logo.png';
 
@@ -9,14 +10,18 @@ const LINKTREE_URL = 'https://linktr.ee/medwellucsd';
 /**
  * Navbar
  *
- * Transparent over the hero sunset sky. Uses the same max-width container
- * as the hero content so the logo on the left aligns vertically with the
- * hero's overline and headline. Text is light (cream) to read against the
- * dusk-purple crown of the sunset.
+ * Transparent over hero sunsets; fades to a dark backdrop when the user
+ * scrolls, or when the current route is a subpage that doesn't open with a
+ * full-bleed photo. `NAV_LINKS` mixes routes and anchors:
+ *   - `to` links are client-side React Router routes (Events, News)
+ *   - `hash` links anchor to sections on the home page; from subpages
+ *     they prefix `/#` so clicking takes you home + scrolls
  */
 const NAV_LINKS = [
-  { label: 'About', href: '#about' },
-  { label: 'Anatomy', href: '#anatomy' },
+  { label: 'About', hash: 'about' },
+  { label: 'Anatomy', hash: 'anatomy' },
+  { label: 'Events', to: '/events' },
+  { label: 'News', to: '/news' },
 ];
 
 export default function Navbar() {
@@ -25,6 +30,7 @@ export default function Navbar() {
   const linktreeHover = useHoverCursor();
   const joinHover = useHoverCursor();
   const [scrolled, setScrolled] = useState(false);
+  const { pathname } = useLocation();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 80);
@@ -33,24 +39,29 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  // Subpages have a slimmer PageHeader — the backdrop should stay on to
+  // keep nav text readable as soon as the user reaches cream content.
+  const isHome = pathname === '/';
+  const solid = scrolled || !isHome;
+
   return (
     <motion.header
       initial={{ opacity: 0, y: -12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.6, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       className={`fixed inset-x-0 top-0 z-40 transition-colors duration-500 ${
-        scrolled ? 'bg-ink/80 backdrop-blur-md shadow-lg shadow-ink/10' : 'bg-transparent'
+        solid ? 'bg-ink/80 backdrop-blur-md shadow-lg shadow-ink/10' : 'bg-transparent'
       }`}
     >
       <div
         className={`mx-auto max-w-7xl px-6 transition-all duration-500 md:px-10 ${
-          scrolled ? 'pt-3 pb-3 md:pt-4 md:pb-4' : 'pt-6 md:pt-8'
+          solid ? 'pt-3 pb-3 md:pt-4 md:pb-4' : 'pt-6 md:pt-8'
         }`}
       >
         <nav className="flex items-center justify-between">
           {/* Left: medallion + wordmark */}
-          <a
-            href="#top"
+          <Link
+            to="/"
             {...logoHover}
             className="group flex items-center gap-3"
             aria-label="MEDWELL home"
@@ -66,12 +77,12 @@ export default function Navbar() {
             <span className="hidden font-serif text-lg tracking-[0.3em] text-cream/95 drop-shadow-[0_1px_8px_rgba(46,29,63,0.35)] sm:inline">
               MEDWELL
             </span>
-          </a>
+          </Link>
 
-          {/* Center: anchor links (desktop only — mobile relies on scroll) */}
+          {/* Center: route + anchor links */}
           <nav className="hidden items-center gap-8 md:flex" aria-label="Primary">
             {NAV_LINKS.map((link) => (
-              <NavLink key={link.href} href={link.href} label={link.label} />
+              <NavItem key={link.label} link={link} isHome={isHome} pathname={pathname} />
             ))}
           </nav>
 
@@ -121,20 +132,49 @@ export default function Navbar() {
   );
 }
 
-function NavLink({ href, label }) {
+function NavItem({ link, isHome, pathname }) {
   const hover = useHoverCursor();
+  const baseClass =
+    'group relative text-[11px] uppercase tracking-[0.3em] text-cream/85 transition-colors hover:text-cream';
+  const underline = (
+    <span
+      aria-hidden
+      className="absolute -bottom-1 left-0 h-px w-0 bg-cream/80 transition-all duration-300 group-hover:w-full"
+    />
+  );
+
+  if (link.hash) {
+    // Anchor on home; on subpages, route to home + hash so the ScrollManager
+    // picks up the target after navigation.
+    const href = isHome ? `#${link.hash}` : `/#${link.hash}`;
+    return isHome ? (
+      <a {...hover} href={href} className={baseClass}>
+        {link.label}
+        {underline}
+      </a>
+    ) : (
+      <Link {...hover} to={`/#${link.hash}`} className={baseClass}>
+        {link.label}
+        {underline}
+      </Link>
+    );
+  }
+
+  const active = pathname === link.to;
   return (
-    <a
+    <Link
       {...hover}
-      href={href}
-      className="group relative text-[11px] uppercase tracking-[0.3em] text-cream/85 transition-colors hover:text-cream"
+      to={link.to}
+      className={`${baseClass} ${active ? 'text-cream' : ''}`}
     >
-      {label}
+      {link.label}
       <span
         aria-hidden
-        className="absolute -bottom-1 left-0 h-px w-0 bg-cream/80 transition-all duration-300 group-hover:w-full"
+        className={`absolute -bottom-1 left-0 h-px bg-cream/80 transition-all duration-300 ${
+          active ? 'w-full' : 'w-0 group-hover:w-full'
+        }`}
       />
-    </a>
+    </Link>
   );
 }
 
