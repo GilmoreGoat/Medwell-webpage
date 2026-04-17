@@ -14,6 +14,8 @@ import logoUrl from '../assets/medwell-logo.png';
  */
 export default function LoadingScreen() {
   const orbitDots = Array.from({ length: 6 }, (_, i) => i);
+  // "Fake beat" cadence: quick hit, rebound, then rest.
+  const beatTimes = [0, 0.18, 0.34, 0.52, 1];
 
   return (
     <motion.div
@@ -53,9 +55,13 @@ export default function LoadingScreen() {
         aria-hidden
         className="absolute h-[420px] w-[420px] rounded-full border border-sunset-coral/35"
         initial={{ opacity: 0, scale: 0.7, rotate: -12 }}
-        animate={{ opacity: [0.25, 0.55, 0.25], scale: [0.96, 1.04, 0.96], rotate: [-8, 8, -8] }}
+        animate={{
+          opacity: [0.24, 0.58, 0.42, 0.5, 0.24],
+          scale: [0.96, 1.06, 0.99, 1.03, 0.96],
+          rotate: [-8, 10, 6, 8, -8],
+        }}
         exit={{ opacity: 0, scale: 1.2 }}
-        transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
+        transition={{ duration: 2.1, times: beatTimes, repeat: Infinity, ease: 'easeOut' }}
       />
 
       {/* Orbiting micro-dots add playful kinetic motion around the logo. */}
@@ -68,13 +74,17 @@ export default function LoadingScreen() {
               className="absolute h-2 w-2 rounded-full bg-sunset-yellow/80 shadow-[0_0_14px_rgba(255,170,90,0.65)]"
               style={{ transform: `rotate(${angle}deg) translateY(-185px)` }}
               initial={{ opacity: 0, scale: 0.6 }}
-              animate={{ opacity: [0.3, 1, 0.3], scale: [0.7, 1.25, 0.7], y: [0, -8, 0] }}
+              animate={{
+                opacity: [0.28, 1, 0.52, 0.84, 0.28],
+                scale: [0.68, 1.32, 0.88, 1.12, 0.68],
+                y: [0, -12, -3, -8, 0],
+              }}
               transition={{
-                duration: 1.9,
-                delay: dot * 0.14,
+                duration: 2.1,
+                times: beatTimes,
+                delay: dot * 0.11,
                 repeat: Infinity,
-                repeatType: 'mirror',
-                ease: 'easeInOut',
+                ease: 'easeOut',
               }}
             />
           );
@@ -87,11 +97,13 @@ export default function LoadingScreen() {
         alt="MEDWELL — medicine & wellness collective"
         draggable={false}
         initial={{ opacity: 0, scale: 0.82, filter: 'blur(6px)' }}
-        animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+        animate={{ opacity: [1, 1, 0.94, 1, 1], scale: [1, 1.02, 0.99, 1.015, 1], filter: 'blur(0px)' }}
         exit={{ opacity: 0, scale: 1.22, filter: 'blur(2px)' }}
         transition={{
-          duration: 1.1,
-          ease: [0.22, 1, 0.36, 1],
+          duration: 2.1,
+          times: beatTimes,
+          repeat: Infinity,
+          ease: 'easeOut',
           filter: { duration: 0.8 },
         }}
         className="relative h-[260px] w-[260px] select-none rounded-full shadow-[0_0_80px_rgba(255,138,76,0.35)] ring-1 ring-white/5 md:h-[300px] md:w-[300px]"
@@ -111,8 +123,11 @@ export default function LoadingScreen() {
         <motion.span
           className="mt-2 text-[11px] uppercase tracking-[0.35em] text-cream/75"
           initial={{ opacity: 0 }}
-          animate={{ opacity: [0.35, 1, 0.35], letterSpacing: ['0.3em', '0.4em', '0.3em'] }}
-          transition={{ duration: 2.6, delay: 0.4, repeat: Infinity, ease: 'easeInOut' }}
+          animate={{
+            opacity: [0.32, 1, 0.62, 0.86, 0.32],
+            letterSpacing: ['0.31em', '0.43em', '0.36em', '0.4em', '0.31em'],
+          }}
+          transition={{ duration: 2.1, times: beatTimes, delay: 0.25, repeat: Infinity, ease: 'easeOut' }}
         >
           wellness in motion
         </motion.span>
