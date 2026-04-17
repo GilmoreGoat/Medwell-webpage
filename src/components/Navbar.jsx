@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useHoverCursor } from './CustomCursor.jsx';
 import logoUrl from '../assets/medwell-logo.png';
@@ -13,20 +14,39 @@ const LINKTREE_URL = 'https://linktr.ee/medwellucsd';
  * hero's overline and headline. Text is light (cream) to read against the
  * dusk-purple crown of the sunset.
  */
+const NAV_LINKS = [
+  { label: 'About', href: '#about' },
+  { label: 'Anatomy', href: '#anatomy' },
+];
+
 export default function Navbar() {
   const logoHover = useHoverCursor();
   const igHover = useHoverCursor();
   const linktreeHover = useHoverCursor();
   const joinHover = useHoverCursor();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 80);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   return (
     <motion.header
       initial={{ opacity: 0, y: -12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.6, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed inset-x-0 top-0 z-40"
+      className={`fixed inset-x-0 top-0 z-40 transition-colors duration-500 ${
+        scrolled ? 'bg-ink/80 backdrop-blur-md shadow-lg shadow-ink/10' : 'bg-transparent'
+      }`}
     >
-      <div className="mx-auto max-w-7xl px-6 pt-6 md:px-10 md:pt-8">
+      <div
+        className={`mx-auto max-w-7xl px-6 transition-all duration-500 md:px-10 ${
+          scrolled ? 'pt-3 pb-3 md:pt-4 md:pb-4' : 'pt-6 md:pt-8'
+        }`}
+      >
         <nav className="flex items-center justify-between">
           {/* Left: medallion + wordmark */}
           <a
@@ -47,6 +67,13 @@ export default function Navbar() {
               MEDWELL
             </span>
           </a>
+
+          {/* Center: anchor links (desktop only — mobile relies on scroll) */}
+          <nav className="hidden items-center gap-8 md:flex" aria-label="Primary">
+            {NAV_LINKS.map((link) => (
+              <NavLink key={link.href} href={link.href} label={link.label} />
+            ))}
+          </nav>
 
           {/* Right: socials + CTA */}
           <div className="flex items-center gap-2 md:gap-4">
@@ -91,6 +118,23 @@ export default function Navbar() {
         </nav>
       </div>
     </motion.header>
+  );
+}
+
+function NavLink({ href, label }) {
+  const hover = useHoverCursor();
+  return (
+    <a
+      {...hover}
+      href={href}
+      className="group relative text-[11px] uppercase tracking-[0.3em] text-cream/85 transition-colors hover:text-cream"
+    >
+      {label}
+      <span
+        aria-hidden
+        className="absolute -bottom-1 left-0 h-px w-0 bg-cream/80 transition-all duration-300 group-hover:w-full"
+      />
+    </a>
   );
 }
 

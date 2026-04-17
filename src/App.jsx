@@ -3,6 +3,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import LoadingScreen from './components/LoadingScreen.jsx';
 import Navbar from './components/Navbar.jsx';
 import Hero from './components/Hero.jsx';
+import About from './components/About.jsx';
+import Anatomy from './components/Anatomy.jsx';
 import CustomCursor from './components/CustomCursor.jsx';
 import { CursorProvider, useCursor } from './context/CursorContext.jsx';
 
@@ -54,6 +56,8 @@ function SiteShell() {
       >
         <Navbar />
         <Hero />
+        <About />
+        <Anatomy />
       </motion.main>
 
       <AnimatePresence>{loading && <LoadingScreen />}</AnimatePresence>
