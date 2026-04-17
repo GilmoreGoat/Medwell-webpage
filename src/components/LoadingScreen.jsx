@@ -13,6 +13,8 @@ import logoUrl from '../assets/medwell-logo.png';
  *      wipes UP, revealing the Hero underneath.
  */
 export default function LoadingScreen() {
+  const orbitDots = Array.from({ length: 6 }, (_, i) => i);
+
   return (
     <motion.div
       key="loader"
@@ -46,6 +48,39 @@ export default function LoadingScreen() {
         transition={{ duration: 1.2, ease: 'easeOut' }}
       />
 
+      {/* Secondary neon-ish accent ring for a modern 2026 vibe. */}
+      <motion.div
+        aria-hidden
+        className="absolute h-[420px] w-[420px] rounded-full border border-sunset-coral/35"
+        initial={{ opacity: 0, scale: 0.7, rotate: -12 }}
+        animate={{ opacity: [0.25, 0.55, 0.25], scale: [0.96, 1.04, 0.96], rotate: [-8, 8, -8] }}
+        exit={{ opacity: 0, scale: 1.2 }}
+        transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
+      />
+
+      {/* Orbiting micro-dots add playful kinetic motion around the logo. */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 grid place-items-center">
+        {orbitDots.map((dot) => {
+          const angle = (dot / orbitDots.length) * 360;
+          return (
+            <motion.span
+              key={dot}
+              className="absolute h-2 w-2 rounded-full bg-sunset-yellow/80 shadow-[0_0_14px_rgba(255,170,90,0.65)]"
+              style={{ transform: `rotate(${angle}deg) translateY(-185px)` }}
+              initial={{ opacity: 0, scale: 0.6 }}
+              animate={{ opacity: [0.3, 1, 0.3], scale: [0.7, 1.25, 0.7], y: [0, -8, 0] }}
+              transition={{
+                duration: 1.9,
+                delay: dot * 0.14,
+                repeat: Infinity,
+                repeatType: 'mirror',
+                ease: 'easeInOut',
+              }}
+            />
+          );
+        })}
+      </div>
+
       {/* Medallion: fades/scales in, lingers, then scales up + fades out. */}
       <motion.img
         src={logoUrl}
@@ -73,6 +108,14 @@ export default function LoadingScreen() {
         <span className="text-[10px] uppercase tracking-[0.5em] text-cream/60">
           at ucsd
         </span>
+        <motion.span
+          className="mt-2 text-[11px] uppercase tracking-[0.35em] text-cream/75"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0.35, 1, 0.35], letterSpacing: ['0.3em', '0.4em', '0.3em'] }}
+          transition={{ duration: 2.6, delay: 0.4, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          wellness in motion
+        </motion.span>
       </motion.div>
     </motion.div>
   );
