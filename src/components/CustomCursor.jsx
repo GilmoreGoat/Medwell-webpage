@@ -21,11 +21,9 @@ import cursorImg from '../assets/cursor-flame.svg';
 export default function CustomCursor() {
   const { hover, intensity } = useCursor();
 
-  // Raw mouse position → spring for smooth trailing.
-  const mouseX = useMotionValue(-100);
-  const mouseY = useMotionValue(-100);
-  const x = useSpring(mouseX, { stiffness: 500, damping: 40, mass: 0.4 });
-  const y = useSpring(mouseY, { stiffness: 500, damping: 40, mass: 0.4 });
+  // Raw mouse position — no spring, tracks instantly.
+  const x = useMotionValue(-100);
+  const y = useMotionValue(-100);
 
   // Hover state drives scale smoothly.
   const scale = useSpring(1, { stiffness: 300, damping: 22 });
@@ -40,12 +38,12 @@ export default function CustomCursor() {
   // Track mouse globally.
   useEffect(() => {
     const move = (e) => {
-      mouseX.set(e.clientX);
-      mouseY.set(e.clientY);
+      x.set(e.clientX);
+      y.set(e.clientY);
     };
     window.addEventListener('mousemove', move, { passive: true });
     return () => window.removeEventListener('mousemove', move);
-  }, [mouseX, mouseY]);
+  }, [x, y]);
 
   // Hide on touch devices — no cursor makes sense there.
   const isTouch = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
