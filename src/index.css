@@ -26,14 +26,18 @@ body {
   cursor: none;
 }
 
-/* Ensure interactive elements also suppress the native cursor. */
-a,
-button,
-[role='button'],
-input,
-textarea,
-select {
-  cursor: none;
+/* Hide the native cursor on EVERY element. Some elements (svg, img,
+   motion.*, anything with its own `cursor:` rule from a UA stylesheet
+   or Tailwind utility like `cursor-pointer`) will otherwise re-expose
+   the OS pointer on top of <CustomCursor />. The !important is
+   deliberate — this rule must win over UA defaults and component-level
+   cursor hints. Touch devices still get the native input because
+   <CustomCursor /> short-circuits there. */
+html,
+html *,
+html *::before,
+html *::after {
+  cursor: none !important;
 }
 
 /* ---------- Hero sunset photo ---------- */
