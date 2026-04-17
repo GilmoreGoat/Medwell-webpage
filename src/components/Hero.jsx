@@ -99,7 +99,7 @@ export default function Hero() {
             transition={{ delay: 1.0, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
             className="mt-8 max-w-xl font-sans text-base font-light leading-relaxed text-cream/90 drop-shadow-[0_1px_12px_rgba(46,29,63,0.35)] md:mt-10 md:text-lg"
           >
-            Medicine is about people, not just textbooks.
+            Great care starts with self care.
           </motion.p>
 
           {/* CTA row — button on its own, meta below for calmer hierarchy */}
