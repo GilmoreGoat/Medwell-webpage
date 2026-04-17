@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import LoadingScreen from './components/LoadingScreen.jsx';
@@ -71,8 +71,15 @@ function SiteShell() {
  */
 function ScrollManager() {
   const { pathname, hash } = useLocation();
+  const hasHandledInitialLoad = useRef(false);
 
   useEffect(() => {
+    if (!hasHandledInitialLoad.current) {
+      hasHandledInitialLoad.current = true;
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      return;
+    }
+
     if (hash) {
       // Wait a tick for the target section to mount.
       const el = document.querySelector(hash);
