@@ -299,7 +299,7 @@ function DigicamStamp() {
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.4, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-        className="mb-1.5 block h-6 w-auto select-none md:h-8"
+        className="mb-1.5 block h-8 w-auto select-none md:h-10"
         style={{
           filter:
             'drop-shadow(0 0 10px rgba(255,170,90,0.55)) drop-shadow(0 1px 4px rgba(46,29,63,0.35))',
@@ -314,7 +314,7 @@ function DigicamStamp() {
           style={{ background: 'rgba(255,176,74,0.85)' }}
         />
         <span
-          className="inline-block h-px w-20 md:w-24"
+          className="inline-block h-px w-16 md:w-20"
           style={{ background: 'rgba(255,176,74,0.55)' }}
         />
         <span
