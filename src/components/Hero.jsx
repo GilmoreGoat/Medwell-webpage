@@ -266,13 +266,22 @@ function DigicamStamp() {
   const hh = String(now.getHours()).padStart(2, '0');
   const mi = String(now.getMinutes()).padStart(2, '0');
 
+  // Deterministic frame counter from the day-of-year — slow-drifting
+  // so it feels like a real film counter without jumping each second.
+  const frameNo = String(
+    (now.getDate() * 31 + now.getMonth() * 7) % 999
+  ).padStart(3, '0');
+
+  // Colon pulses once per second like a tired LCD.
+  const colon = now.getSeconds() % 2 === 0 ? ':' : ' ';
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 1.6, duration: 1 }}
       aria-hidden
-      className="pointer-events-none absolute bottom-3 right-4 z-10 select-none tabular-nums md:bottom-4 md:right-6"
+      className="pointer-events-none absolute bottom-3 right-4 z-10 flex select-none flex-col items-end tabular-nums md:bottom-4 md:right-6"
       style={{
         fontFamily: "'Courier New', ui-monospace, Menlo, monospace",
         color: '#FFB04A',
@@ -290,13 +299,42 @@ function DigicamStamp() {
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.4, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-        className="mb-2 ml-auto block h-6 w-auto select-none md:h-8"
+        className="mb-1.5 block h-6 w-auto select-none md:h-8"
         style={{
           filter:
             'drop-shadow(0 0 10px rgba(255,170,90,0.55)) drop-shadow(0 1px 4px rgba(46,29,63,0.35))',
         }}
       />
-      {mm} . {dd} . {yyyy}  {hh}:{mi}
+
+      {/* Crop-mark divider — thin line flanked by tiny vertical ticks,
+          bridging the serif wordmark above to the LCD stamp below. */}
+      <div className="mb-1 flex items-center gap-1.5" aria-hidden>
+        <span
+          className="inline-block h-2 w-px"
+          style={{ background: 'rgba(255,176,74,0.85)' }}
+        />
+        <span
+          className="inline-block h-px w-20 md:w-24"
+          style={{ background: 'rgba(255,176,74,0.55)' }}
+        />
+        <span
+          className="inline-block h-2 w-px"
+          style={{ background: 'rgba(255,176,74,0.85)' }}
+        />
+      </div>
+
+      <div
+        className="mb-0.5"
+        style={{ fontSize: '0.72em', letterSpacing: '0.14em', opacity: 0.92 }}
+      >
+        FRAME {frameNo} · FUJI 400 · MEDWELL
+      </div>
+
+      <div>
+        {mm} . {dd} . {yyyy}  {hh}
+        <span style={{ opacity: colon === ':' ? 1 : 0.3 }}>:</span>
+        {mi}
+      </div>
     </motion.div>
   );
 }
