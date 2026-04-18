@@ -45,10 +45,14 @@ export default function CustomCursor() {
     return base;
   });
 
+  // The cursor wrapper is 40×40 (h-10 w-10). Framer-motion's x/y compile
+  // to inline transform and override any Tailwind `-translate-x-1/2`
+  // centering, so we offset manually here — this puts the sun's visual
+  // center exactly on the mouse instead of 20px down-right of it.
   useEffect(() => {
     const move = (e) => {
-      x.set(e.clientX);
-      y.set(e.clientY);
+      x.set(e.clientX - 20);
+      y.set(e.clientY - 20);
       if (!visible) setVisible(true);
     };
     const down = () => setPressed(true);
@@ -81,7 +85,7 @@ export default function CustomCursor() {
     <motion.div
       aria-hidden
       style={{ x, y, scale, opacity: visible ? 1 : 0 }}
-      className="pointer-events-none fixed left-0 top-0 z-[9999] h-10 w-10 -translate-x-1/2 -translate-y-1/2 will-change-transform"
+      className="pointer-events-none fixed left-0 top-0 z-[9999] h-10 w-10 will-change-transform"
     >
       {/* Soft halo — steady ambient warmth, opacity pulses with state */}
       <motion.span
