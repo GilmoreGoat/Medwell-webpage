@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useHoverCursor } from './CustomCursor.jsx';
 import sunsetBg from '../assets/sunset-bg.jpg';
+import monogramUrl from '../assets/medwell-monogram.svg';
 
 const LINKTREE_URL = 'https://linktr.ee/medwellucsd';
 
@@ -282,6 +283,19 @@ function DigicamStamp() {
         fontSize: 'clamp(0.7rem, 1.1vw, 0.95rem)',
       }}
     >
+      <motion.img
+        src={monogramUrl}
+        alt=""
+        draggable={false}
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.4, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+        className="mb-2 ml-auto block h-9 w-auto select-none md:h-11"
+        style={{
+          filter:
+            'drop-shadow(0 0 10px rgba(255,170,90,0.55)) drop-shadow(0 1px 4px rgba(46,29,63,0.35))',
+        }}
+      />
       {mm} . {dd} . {yyyy}  {hh}:{mi}
     </motion.div>
   );
