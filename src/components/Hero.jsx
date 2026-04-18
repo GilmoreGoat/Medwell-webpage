@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useHoverCursor } from './CustomCursor.jsx';
 import sunsetBg from '../assets/sunset-bg.jpg';
@@ -43,17 +44,80 @@ export default function Hero() {
       id="top"
       className="relative flex min-h-[100svh] w-full flex-col overflow-hidden bg-ink"
     >
-      {/* ===== Background photo — ken-burns pan ===== */}
-      <img
-        src={sunsetBg}
-        alt=""
+      {/* ===== Background photo — ken-burns pan + "digicam" treatment =====
+          Three stacked layers fake the look of a warm point-and-shoot
+          print from a decade-old sunset photo:
+            · base   — the sunset pushed to punchier contrast / saturation
+            · rChan  — same photo, shifted +1px right, red-tinted, blended
+            · bChan  — same photo, shifted -1px left, blue-tinted, blended
+          Together they add a subtle chromatic aberration without needing
+          a new asset or a WebGL shader. The bloom + grain layers below
+          finish the warm, slightly-degraded digicam feel. */}
+      <div aria-hidden className="sunset-pan pointer-events-none absolute inset-0">
+        <img
+          src={sunsetBg}
+          alt=""
+          draggable={false}
+          className="absolute inset-0 h-full w-full select-none object-cover"
+          style={{ filter: 'contrast(1.18) saturate(1.35) brightness(1.02) hue-rotate(-4deg)' }}
+        />
+        {/* Red channel — shifted right */}
+        <img
+          src={sunsetBg}
+          alt=""
+          draggable={false}
+          className="absolute inset-0 h-full w-full select-none object-cover mix-blend-screen"
+          style={{
+            transform: 'translate3d(2px, 0, 0)',
+            filter: 'saturate(1.4) sepia(0.2) hue-rotate(-15deg) opacity(0.35)',
+          }}
+        />
+        {/* Blue channel — shifted left */}
+        <img
+          src={sunsetBg}
+          alt=""
+          draggable={false}
+          className="absolute inset-0 h-full w-full select-none object-cover mix-blend-screen"
+          style={{
+            transform: 'translate3d(-2px, 0, 0)',
+            filter: 'saturate(1.3) hue-rotate(22deg) opacity(0.22)',
+          }}
+        />
+      </div>
+
+      {/* Warm bloom — reinforces the deep-reds of Nadia's reference photo. */}
+      <div
         aria-hidden
-        draggable={false}
-        className="sunset-pan pointer-events-none absolute inset-0 h-full w-full select-none object-cover"
+        className="pointer-events-none absolute inset-0 mix-blend-soft-light"
+        style={{
+          background:
+            'radial-gradient(ellipse at 50% 60%, rgba(255,120,70,0.45) 0%, rgba(160,40,80,0.35) 40%, rgba(30,10,35,0.2) 80%)',
+        }}
       />
 
       {/* ===== Scrim for text contrast ===== */}
       <div aria-hidden className="hero-scrim pointer-events-none absolute inset-0" />
+
+      {/* Digicam grain — coarser than .noise so it reads as film texture. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 mix-blend-overlay"
+        style={{
+          opacity: 0.18,
+          backgroundImage:
+            "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.85'/></svg>\")",
+        }}
+      />
+
+      {/* Heavy corner vignette — finishes the point-and-shoot look. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            'radial-gradient(ellipse at center, transparent 55%, rgba(20,6,30,0.55) 100%)',
+        }}
+      />
 
       {/* ===== Main content block — anchored to the same container as the nav ===== */}
       <div className="relative z-10 flex flex-1 items-center">
@@ -172,6 +236,53 @@ export default function Hero() {
           className="block h-6 w-px bg-cream/70"
         />
       </motion.div>
+
+      {/* ===== Digicam timestamp — very bottom right ===== */}
+      <DigicamStamp />
     </section>
+  );
+}
+
+/**
+ * DigicamStamp
+ *
+ * Warm orange monospace readout in the bottom-right corner, mimicking
+ * the burnt-in date on an old point-and-shoot print. Updates every
+ * second so the stamp is always current. The color + glow match the
+ * reference photo's hot-orange clock font.
+ */
+function DigicamStamp() {
+  const [now, setNow] = useState(() => new Date());
+
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const mm = String(now.getMonth() + 1).padStart(2, '0');
+  const dd = String(now.getDate()).padStart(2, '0');
+  const yyyy = now.getFullYear();
+  const hh = String(now.getHours()).padStart(2, '0');
+  const mi = String(now.getMinutes()).padStart(2, '0');
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 1.6, duration: 1 }}
+      aria-hidden
+      className="pointer-events-none absolute bottom-3 right-4 z-10 select-none tabular-nums md:bottom-4 md:right-6"
+      style={{
+        fontFamily: "'Courier New', ui-monospace, Menlo, monospace",
+        color: '#FFB04A',
+        fontWeight: 700,
+        letterSpacing: '0.08em',
+        textShadow:
+          '0 0 6px rgba(255,140,60,0.75), 0 0 14px rgba(255,120,50,0.45), 0 1px 2px rgba(0,0,0,0.65)',
+        fontSize: 'clamp(0.7rem, 1.1vw, 0.95rem)',
+      }}
+    >
+      {mm} . {dd} . {yyyy}  {hh}:{mi}
+    </motion.div>
   );
 }
