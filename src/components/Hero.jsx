@@ -45,78 +45,101 @@ export default function Hero() {
       id="top"
       className="relative flex min-h-[100svh] w-full flex-col overflow-hidden bg-ink"
     >
-      {/* ===== Background photo — ken-burns pan + "digicam" treatment =====
-          Three stacked layers fake the look of a warm point-and-shoot
-          print from a decade-old sunset photo:
-            · base   — the sunset pushed to punchier contrast / saturation
-            · rChan  — same photo, shifted +1px right, red-tinted, blended
-            · bChan  — same photo, shifted -1px left, blue-tinted, blended
-          Together they add a subtle chromatic aberration without needing
-          a new asset or a WebGL shader. The bloom + grain layers below
-          finish the warm, slightly-degraded digicam feel. */}
+      {/* ===== Background photo — ken-burns pan + "film photo" treatment =====
+          Layered to mimic a warm 35mm print: slightly soft, lifted blacks,
+          gentle chromatic bleed, and a vertical light leak on the right
+          edge like you'd get from a loose film canister seal. */}
       <div aria-hidden className="sunset-pan pointer-events-none absolute inset-0">
         <img
           src={sunsetBg}
           alt=""
           draggable={false}
           className="absolute inset-0 h-full w-full select-none object-cover"
-          style={{ filter: 'contrast(1.18) saturate(1.35) brightness(1.02) hue-rotate(-4deg)' }}
-        />
-        {/* Red channel — shifted right */}
-        <img
-          src={sunsetBg}
-          alt=""
-          draggable={false}
-          className="absolute inset-0 h-full w-full select-none object-cover mix-blend-screen"
           style={{
-            transform: 'translate3d(2px, 0, 0)',
-            filter: 'saturate(1.4) sepia(0.2) hue-rotate(-15deg) opacity(0.35)',
+            filter:
+              'contrast(0.92) saturate(1.08) brightness(1.04) sepia(0.08) hue-rotate(-3deg)',
           }}
         />
-        {/* Blue channel — shifted left */}
+        {/* Very subtle red-channel bleed — shifted right a hair */}
         <img
           src={sunsetBg}
           alt=""
           draggable={false}
           className="absolute inset-0 h-full w-full select-none object-cover mix-blend-screen"
           style={{
-            transform: 'translate3d(-2px, 0, 0)',
-            filter: 'saturate(1.3) hue-rotate(22deg) opacity(0.22)',
+            transform: 'translate3d(1px, 0, 0)',
+            filter: 'saturate(1.2) sepia(0.25) hue-rotate(-12deg) opacity(0.18)',
           }}
         />
       </div>
 
-      {/* Warm bloom — reinforces the deep-reds of Nadia's reference photo. */}
+      {/* Matte fade — lifts the blacks toward warm gray, the signature
+          "washed" film look rather than punchy digital contrast. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: 'rgba(255, 226, 196, 0.08)',
+          mixBlendMode: 'screen',
+        }}
+      />
+
+      {/* Warm overall wash — nudges mids toward amber like a faded print. */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 mix-blend-soft-light"
         style={{
           background:
-            'radial-gradient(ellipse at 50% 60%, rgba(255,120,70,0.45) 0%, rgba(160,40,80,0.35) 40%, rgba(30,10,35,0.2) 80%)',
+            'linear-gradient(180deg, rgba(255,200,150,0.25) 0%, rgba(255,150,110,0.18) 60%, rgba(120,60,90,0.18) 100%)',
+        }}
+      />
+
+      {/* Right-edge light leak — warm orange bleed along the right side,
+          like the reference shot with the vertical flare. Subtle on mobile
+          (narrower viewport); full-strength on desktop. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-y-0 right-0 w-[26%] mix-blend-screen"
+        style={{
+          background:
+            'linear-gradient(270deg, rgba(255,140,70,0.55) 0%, rgba(255,110,90,0.28) 35%, rgba(255,150,90,0.08) 70%, transparent 100%)',
+        }}
+      />
+
+      {/* Soft halation near sun — a warm bloom that bleeds out of bright
+          areas, characteristic of film around strong highlights. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 mix-blend-screen"
+        style={{
+          background:
+            'radial-gradient(ellipse at 50% 55%, rgba(255,200,150,0.22) 0%, rgba(255,160,110,0.12) 35%, transparent 70%)',
         }}
       />
 
       {/* ===== Scrim for text contrast ===== */}
       <div aria-hidden className="hero-scrim pointer-events-none absolute inset-0" />
 
-      {/* Digicam grain — coarser than .noise so it reads as film texture. */}
+      {/* Film grain — finer and lighter than a digicam; reads as emulsion
+          not noise. */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 mix-blend-overlay"
         style={{
-          opacity: 0.18,
+          opacity: 0.14,
           backgroundImage:
-            "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.85'/></svg>\")",
+            "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.9'/></svg>\")",
         }}
       />
 
-      {/* Heavy corner vignette — finishes the point-and-shoot look. */}
+      {/* Gentle corner vignette — much lighter than before; film prints
+          darken at the corners just a touch, not dramatically. */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            'radial-gradient(ellipse at center, transparent 55%, rgba(20,6,30,0.55) 100%)',
+            'radial-gradient(ellipse at center, transparent 62%, rgba(30,12,40,0.32) 100%)',
         }}
       />
 
