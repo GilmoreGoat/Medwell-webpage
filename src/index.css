@@ -195,3 +195,15 @@ html *::after {
 .pillar-shimmer {
   animation: shimmer-slow 9s ease-in-out infinite;
 }
+
+/* ---------- Route transition ----------
+   Applied to the keyed wrapper in AnimatedRoutes so every page
+   remount fades + lifts in. Keeps the swap from feeling snappy. */
+@keyframes page-enter {
+  from { opacity: 0; transform: translate3d(0, 12px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+.page-enter {
+  animation: page-enter 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: opacity, transform;
+}

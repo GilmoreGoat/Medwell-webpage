@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import LoadingScreen from './components/LoadingScreen.jsx';
@@ -51,16 +51,35 @@ function SiteShell() {
       >
         <Navbar />
         <ScrollManager />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/events" element={<Events />} />
-          <Route path="/news" element={<News />} />
-          <Route path="*" element={<Home />} />
-        </Routes>
+        <AnimatedRoutes />
       </motion.main>
 
       <AnimatePresence>{loading && <LoadingScreen />}</AnimatePresence>
     </>
+  );
+}
+
+/**
+ * AnimatedRoutes
+ *
+ * Keying the motion wrapper on pathname remounts it on every nav, so each
+ * page fades up from its initial state. We skip AnimatePresence/exit on
+ * purpose — under React StrictMode + router v7 the exit phase stalls and
+ * pins the outgoing page on screen. ScrollManager's 400ms delay on the
+ * scroll reset is replaced by an immediate reset since there's no old
+ * page to protect anymore.
+ */
+function AnimatedRoutes() {
+  const location = useLocation();
+  return (
+    <div key={location.pathname} className="page-enter">
+      <Routes location={location}>
+        <Route path="/" element={<Home />} />
+        <Route path="/events" element={<Events />} />
+        <Route path="/news" element={<News />} />
+        <Route path="*" element={<Home />} />
+      </Routes>
+    </div>
   );
 }
 
@@ -71,17 +90,9 @@ function SiteShell() {
  */
 function ScrollManager() {
   const { pathname, hash } = useLocation();
-  const hasHandledInitialLoad = useRef(false);
 
   useEffect(() => {
-    if (!hasHandledInitialLoad.current) {
-      hasHandledInitialLoad.current = true;
-      window.scrollTo({ top: 0, behavior: 'instant' });
-      return;
-    }
-
     if (hash) {
-      // Wait a tick for the target section to mount.
       const el = document.querySelector(hash);
       if (el) {
         el.scrollIntoView({ behavior: 'smooth', block: 'start' });
