@@ -131,6 +131,32 @@ export default function Hero() {
         }}
       />
 
+      {/* ===== Text-contrast scrim =====
+          Localized halo behind the headline block only, so cream type
+          reads cleanly over the hot sunset midband. Tight enough that
+          the sun, horizon, water, and right-edge light leak all stay
+          vivid — patron flagged "white font difficult to read" and this
+          is tuned to fix contrast without mellowing the photo itself. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 mix-blend-multiply"
+        style={{
+          background:
+            'radial-gradient(ellipse 42% 38% at 26% 52%, rgba(46,20,70,0.55) 0%, rgba(46,20,70,0.28) 45%, transparent 72%)',
+        }}
+      />
+      {/* Faint left edge fade so the overline + "No application fee"
+          meta line (which sit at the column edge) get a hair of extra
+          contrast without tinting the midfield */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-y-0 left-0 w-[38%]"
+        style={{
+          background:
+            'linear-gradient(90deg, rgba(22,8,36,0.28) 0%, rgba(22,8,36,0.1) 55%, transparent 100%)',
+        }}
+      />
+
       {/* ===== Main content block — anchored to the same container as the nav ===== */}
       <div className="relative z-10 flex flex-1 items-center">
         <div className="mx-auto w-full max-w-7xl px-6 pt-36 pb-40 md:px-10 md:pt-40 md:pb-44">
