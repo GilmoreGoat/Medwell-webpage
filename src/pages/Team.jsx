@@ -30,7 +30,10 @@ const MEMBERS = [
     role: 'Cofounder · President',
     index: '01',
     photo: `${BASE}team/nadia.png`,
-    photoPosition: '72% 15%',
+    // Nadia is positioned right-of-center in the landscape poster shot,
+    // so pull the 3:4 crop to the right and slightly down from the top
+    // to center on her face.
+    photoPosition: '76% 32%',
     bio: "Nadia is a Human Biology and Literature student at UC San Diego with her sights set on becoming an interventional cardiologist. She co-founded MEDWELL out of a belief that pre-medical culture could be something warmer and more human. Her research at Scripps Research — studying how autism-linked genes affect neuron growth and morphology — was published as part of the Perturb-CLEAR paper and presented at both SACNAS and the UCSD Undergraduate Research Conference. Beyond the lab, she serves on the HOPE and BMES subcommittees at UCSD and coordinates the KP Launch program — channeling the same energy into every community she is part of.",
     linkedin: 'https://www.linkedin.com/in/nadia-burciu-85047836b/',
     instagram:
@@ -43,7 +46,9 @@ const MEMBERS = [
     role: 'Cofounder · President',
     index: '02',
     photo: `${BASE}team/ariel.png`,
-    photoPosition: 'center 20%',
+    // Ariel sits on the left third of the bay-window frame; bias the
+    // crop left and toward her face height.
+    photoPosition: '32% 28%',
     bio: "Ariel is drawn to oncology — and everything she does reflects that: volunteering in the Bone Marrow Transplant unit at UC San Diego Health, coordinating marrow drives with Gift of Life, and writing cancer awareness stories for the American Cancer Society. A PATHS Scholar and Eighth College financial consultant managing a $60K+ student budget, she has spent years in clinical and community spaces proving that care is something you practice long before you earn the title. She co-founded MEDWELL because she believes that same intentionality belongs in pre-med culture, too.",
     linkedin: 'https://www.linkedin.com/in/ariel-yee-69b990320/',
     instagram:
