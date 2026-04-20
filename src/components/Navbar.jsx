@@ -20,6 +20,7 @@ const LINKTREE_URL = 'https://linktr.ee/medwellucsd';
 const NAV_LINKS = [
   { label: 'About', hash: 'about' },
   { label: 'Anatomy', hash: 'anatomy' },
+  { label: 'Team', to: '/team' },
   { label: 'Events', to: '/events' },
   { label: 'News', to: '/news' },
 ];

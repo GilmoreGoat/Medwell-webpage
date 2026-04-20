@@ -8,6 +8,7 @@ import Sol from './components/chatbot/Sol.jsx';
 import Home from './pages/Home.jsx';
 import Events from './pages/Events.jsx';
 import News from './pages/News.jsx';
+import Team from './pages/Team.jsx';
 import { CursorProvider, useCursor } from './context/CursorContext.jsx';
 
 /**
@@ -79,6 +80,7 @@ function AnimatedRoutes() {
         <Route path="/" element={<Home />} />
         <Route path="/events" element={<Events />} />
         <Route path="/news" element={<News />} />
+        <Route path="/team" element={<Team />} />
         <Route path="*" element={<Home />} />
       </Routes>
     </div>

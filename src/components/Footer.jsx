@@ -10,6 +10,7 @@ const EMAIL = 'medwell@ucsd.edu';
 const EXPLORE = [
   { label: 'About', hash: 'about' },
   { label: 'Anatomy', hash: 'anatomy' },
+  { label: 'Team', to: '/team' },
   { label: 'Events', to: '/events' },
   { label: 'News', to: '/news' },
 ];
