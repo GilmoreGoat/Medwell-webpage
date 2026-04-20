@@ -44,6 +44,8 @@ public/
   The import in `CustomCursor.jsx` stays the same.
 - **Brand logo** — replace `src/assets/medwell-logo.png`. Both `Navbar.jsx`
   and `LoadingScreen.jsx` import this path.
+- **Background music** — add your track at `public/background-music.mp3`.
+  The app auto-loads this file and provides a bottom-right music toggle.
 
 ### Scroll-linked cursor
 
