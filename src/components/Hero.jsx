@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion } from 'framer-motion';
 import { useHoverCursor } from './CustomCursor.jsx';
 import sunsetBg from '../assets/sunset-bg.jpg';
@@ -39,9 +40,12 @@ const headlineWord = {
 
 export default function Hero() {
   const ctaHover = useHoverCursor();
+  const heroRef = useRef(null);
+  const heroSentinelRef = useRef(null);
 
   return (
     <section
+      ref={heroRef}
       id="top"
       className="relative flex min-h-[100svh] w-full flex-col overflow-hidden bg-ink"
     >
@@ -275,8 +279,21 @@ export default function Hero() {
         />
       </motion.div>
 
-      {/* ===== Digicam timestamp — very bottom right ===== */}
-      <DigicamStamp />
+      {/* ===== Digicam timestamp — very bottom right =====
+          Stays glued to the viewport bottom-right while the hero is
+          still extending past the fold (important on mobile Safari,
+          where the address bar pushes the hero taller than 100vh so an
+          absolutely-positioned stamp lands below the initial view).
+          Once the user scrolls far enough that the hero's natural
+          resting spot enters the viewport, the stamp parks there.
+          Sentinel sits at the resting spot and an IntersectionObserver
+          watches whether it's above, in, or below the fold. */}
+      <span
+        ref={heroSentinelRef}
+        aria-hidden
+        className="pointer-events-none absolute bottom-3 right-4 block h-px w-px md:bottom-4 md:right-6"
+      />
+      <DigicamStamp sentinelRef={heroSentinelRef} />
     </section>
   );
 }
@@ -289,13 +306,74 @@ export default function Hero() {
  * second so the stamp is always current. The color + glow match the
  * reference photo's hot-orange clock font.
  */
-function DigicamStamp() {
+function DigicamStamp({ sentinelRef }) {
   const [now, setNow] = useState(() => new Date());
+  // Portal target — null on the first render to avoid SSR-ish surprises
+  // and to let <body> mount before we portal into it.
+  const [portalEl, setPortalEl] = useState(null);
+  // `stuck` = locked to viewport bottom-right. Flipped to false once the
+  // sentinel (hero resting spot) enters the viewport, at which point
+  // the stamp switches to absolute-on-body anchored to that spot so it
+  // scrolls out with the hero.
+  const [stuck, setStuck] = useState(true);
+  // Absolute top in document coords for the parked state.
+  const [parkedTop, setParkedTop] = useState(0);
+  // Track md breakpoint so the stamp's offsets match Tailwind's
+  // (bottom-3 right-4 mobile, bottom-4 right-6 md).
+  const [isMd, setIsMd] = useState(false);
+
+  useEffect(() => {
+    setPortalEl(document.body);
+    const mql = window.matchMedia('(min-width: 768px)');
+    const sync = () => setIsMd(mql.matches);
+    sync();
+    mql.addEventListener('change', sync);
+    return () => mql.removeEventListener('change', sync);
+  }, []);
 
   useEffect(() => {
     const id = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(id);
   }, []);
+
+  // Watch the sentinel (placed at the hero's resting spot). When it's
+  // below the viewport → stamp stays stuck to the viewport. When it
+  // enters or passes above → stamp parks at the sentinel's doc position
+  // so it scrolls out with the hero. Belt-and-suspenders: both a scroll
+  // listener AND an IntersectionObserver are registered. Either alone
+  // is enough in any real browser; pairing them hedges against
+  // momentum-scroll debouncing on some mobiles and against virtualized
+  // scroll containers where one path might miss events.
+  useEffect(() => {
+    const el = sentinelRef?.current;
+    if (!el) return;
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const rect = el.getBoundingClientRect();
+      const stuckNow = rect.top > window.innerHeight - 4;
+      setStuck(stuckNow);
+      if (!stuckNow) setParkedTop(rect.top + window.scrollY);
+    };
+    const schedule = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(update);
+    };
+    update();
+    const io = new IntersectionObserver(schedule, {
+      threshold: [0, 1],
+      rootMargin: '1px',
+    });
+    io.observe(el);
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    return () => {
+      io.disconnect();
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [sentinelRef]);
 
   const mm = String(now.getMonth() + 1).padStart(2, '0');
   const dd = String(now.getDate()).padStart(2, '0');
@@ -312,14 +390,33 @@ function DigicamStamp() {
   // Colon pulses once per second like a tired LCD.
   const colon = now.getSeconds() % 2 === 0 ? ':' : ' ';
 
-  return (
+  if (!portalEl) return null;
+
+  // Position style resolved off stuck/parked. We always portal to body
+  // so framer-motion transforms on <motion.main> don't create a new
+  // containing block and break `position: fixed`. For the parked state
+  // we use absolute-on-body with a top/right anchored to the hero's
+  // bottom in document coords — that lets the stamp scroll out with the
+  // section naturally rather than staying glued to the viewport.
+  const positionStyle = stuck
+    ? { position: 'fixed', bottom: undefined, right: undefined }
+    : { position: 'absolute', top: parkedTop, right: undefined };
+
+  return createPortal(
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 1.6, duration: 1 }}
       aria-hidden
-      className="pointer-events-none absolute bottom-3 right-4 z-10 flex select-none flex-col items-end tabular-nums md:bottom-4 md:right-6"
+      className="pointer-events-none flex select-none flex-col items-end tabular-nums"
       style={{
+        ...positionStyle,
+        right: isMd ? 24 : 16,
+        bottom: stuck ? (isMd ? 16 : 12) : undefined,
+        // Use translateY(-100%) when parked so `top` = hero bottom line,
+        // and the stamp sits above that line (just inside the hero).
+        transform: stuck ? undefined : 'translateY(-100%)',
+        zIndex: 20,
         fontFamily: "'Courier New', ui-monospace, Menlo, monospace",
         color: '#FFB04A',
         fontWeight: 700,
@@ -386,6 +483,7 @@ function DigicamStamp() {
         <span style={{ opacity: colon === ':' ? 1 : 0.3 }}>:</span>
         {mi}
       </div>
-    </motion.div>
+    </motion.div>,
+    portalEl
   );
 }
