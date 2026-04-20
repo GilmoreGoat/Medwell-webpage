@@ -47,6 +47,16 @@ export default function Sol() {
     }
   }, [open]);
 
+  // Auto-grow the textarea vertically as the user types. Caps at ~5 lines
+  // so the composer never swallows the transcript, but anything beyond
+  // that scrolls internally instead of running off-screen horizontally.
+  useEffect(() => {
+    const el = inputRef.current;
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 140) + 'px';
+  }, [input, open]);
+
   // Escape closes the panel from anywhere.
   useEffect(() => {
     const onKey = (e) => {
@@ -104,10 +114,10 @@ export default function Sol() {
         transition={{ delay: 0.6, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         whileHover={{ scale: 1.06 }}
         whileTap={{ scale: 0.94 }}
-        className="fixed bottom-5 right-5 z-[1000] grid h-14 w-14 place-items-center rounded-full bg-gradient-to-br from-sunset-yellow via-sunset-orange to-sunset-coral text-ink shadow-[0_14px_40px_-10px_rgba(255,138,76,0.75)] md:bottom-7 md:right-7 md:h-16 md:w-16"
+        className="fixed bottom-5 left-5 z-[1000] grid h-12 w-12 place-items-center rounded-full bg-gradient-to-br from-sunset-yellow via-sunset-orange to-sunset-coral text-ink shadow-[0_14px_40px_-10px_rgba(255,138,76,0.75)] md:bottom-6 md:left-6 md:h-14 md:w-14"
       >
         <span className="relative z-10">
-          <SolMark size={open ? 22 : 26} />
+          <SolMark size={open ? 18 : 22} />
         </span>
         {/* Slow breathing halo so Sol feels warm, not alarming */}
         <span
@@ -131,7 +141,7 @@ export default function Sol() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 18, scale: 0.97 }}
             transition={{ type: 'spring', stiffness: 260, damping: 26 }}
-            className="fixed bottom-24 right-5 z-[999] flex h-[560px] max-h-[82vh] w-[360px] max-w-[calc(100vw-2.5rem)] flex-col overflow-hidden rounded-3xl border border-cream/10 bg-dusk-deep/95 text-cream shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)] backdrop-blur-xl md:bottom-28 md:right-7"
+            className="fixed bottom-24 left-5 z-[999] flex h-[560px] max-h-[82vh] w-[360px] max-w-[calc(100vw-2.5rem)] flex-col overflow-hidden rounded-3xl border border-cream/10 bg-dusk-deep/95 text-cream shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)] backdrop-blur-xl md:bottom-24 md:left-6"
           >
             {/* Soft warm glow bleeding into the header corner */}
             <div
@@ -178,29 +188,38 @@ export default function Sol() {
               ))}
             </div>
 
-            {/* Composer */}
+            {/* Composer — textarea auto-grows vertically (cap ~140px) so
+                long messages wrap cleanly instead of scrolling off the
+                right edge. Enter sends; Shift+Enter inserts a newline. */}
             <form
               onSubmit={(e) => {
                 e.preventDefault();
                 send(input);
               }}
-              className="relative flex items-center gap-2 border-t border-cream/10 bg-dusk-deep/70 px-3 py-3"
+              className="relative flex items-end gap-2 border-t border-cream/10 bg-dusk-deep/70 px-3 py-3"
             >
-              <input
+              <textarea
                 ref={inputRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                type="text"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    send(input);
+                  }
+                }}
+                rows={1}
                 placeholder="Ask Sol anything…"
                 aria-label="Message Sol"
-                className="flex-1 rounded-full bg-cream/5 px-4 py-2 text-sm text-cream placeholder:text-cream/45 focus:bg-cream/10 focus:outline-none"
+                className="flex-1 resize-none rounded-2xl bg-cream/5 px-4 py-2 text-sm leading-relaxed text-cream placeholder:text-cream/45 focus:bg-cream/10 focus:outline-none"
+                style={{ maxHeight: '140px', overflowY: 'auto' }}
               />
               <button
                 {...sendHover}
                 type="submit"
                 disabled={!input.trim()}
                 aria-label="Send"
-                className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-sunset-yellow to-sunset-coral text-ink transition-transform duration-200 enabled:hover:-translate-y-0.5 disabled:opacity-40"
+                className="grid h-9 w-9 flex-none place-items-center rounded-full bg-gradient-to-br from-sunset-yellow to-sunset-coral text-ink transition-transform duration-200 enabled:hover:-translate-y-0.5 disabled:opacity-40"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" fill="none">
                   <path d="M5 12h14" />

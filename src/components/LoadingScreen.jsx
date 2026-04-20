@@ -87,7 +87,8 @@ export default function LoadingScreen() {
 
         {/* Eyebrow */}
         <motion.p
-          className="mb-10 text-[10px] uppercase tracking-[0.55em] text-cream/40"
+          className="mb-10 text-[11px] uppercase tracking-[0.38em] text-cream/80"
+          style={{ textShadow: '0 1px 14px rgba(46,29,63,0.55)' }}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.4 }}
@@ -173,7 +174,8 @@ export default function LoadingScreen() {
 
         {/* Tagline */}
         <motion.p
-          className="mt-6 text-[10px] uppercase tracking-[0.45em] text-cream/35"
+          className="mt-6 text-[11px] uppercase tracking-[0.32em] text-cream/75"
+          style={{ textShadow: '0 1px 14px rgba(46,29,63,0.55)' }}
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: 'easeOut', delay: 1.5 }}

@@ -329,17 +329,31 @@ function DigicamStamp() {
         fontSize: 'clamp(0.7rem, 1.1vw, 0.95rem)',
       }}
     >
-      <motion.img
-        src={wordmarkUrl}
-        alt=""
-        draggable={false}
+      {/* Wordmark rendered as a CSS-masked div so the glyph inherits the
+          exact same #FFB04A fill + orange halo as the timestamp below.
+          The source SVG has its own fills, so we can't just colorize it
+          with `color` or a filter chain — we use it as a mask and paint
+          a solid sunset-orange fill underneath. drop-shadow chain mirrors
+          the textShadow on the stamp so both reads feel like one LCD. */}
+      <motion.div
+        aria-hidden
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.4, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-        className="mb-1.5 block h-8 w-auto select-none md:h-10"
+        className="mb-1.5 block h-8 select-none md:h-10"
         style={{
+          aspectRatio: '3048 / 1408',
+          backgroundColor: '#FFB04A',
+          WebkitMaskImage: `url(${wordmarkUrl})`,
+          maskImage: `url(${wordmarkUrl})`,
+          WebkitMaskRepeat: 'no-repeat',
+          maskRepeat: 'no-repeat',
+          WebkitMaskSize: 'contain',
+          maskSize: 'contain',
+          WebkitMaskPosition: 'right center',
+          maskPosition: 'right center',
           filter:
-            'drop-shadow(0 0 10px rgba(255,170,90,0.55)) drop-shadow(0 1px 4px rgba(46,29,63,0.35))',
+            'drop-shadow(0 0 6px rgba(255,140,60,0.75)) drop-shadow(0 0 14px rgba(255,120,50,0.45)) drop-shadow(0 1px 2px rgba(0,0,0,0.65))',
         }}
       />
 
