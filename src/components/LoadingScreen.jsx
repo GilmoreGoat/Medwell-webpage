@@ -25,6 +25,13 @@ import logoUrl from '../assets/medwell-logo.png';
 
 const LETTERS = 'MEDWELL'.split('');
 const SPLASH_MS = 2600; // keep in sync with App.jsx
+const SPARKLES = [
+  { left: '18%', top: '20%', size: 8, delay: 0.45, duration: 1.8 },
+  { left: '30%', top: '68%', size: 6, delay: 0.9, duration: 1.5 },
+  { left: '77%', top: '24%', size: 10, delay: 0.7, duration: 1.9 },
+  { left: '67%', top: '72%', size: 7, delay: 1.1, duration: 1.6 },
+  { left: '52%', top: '14%', size: 6, delay: 1.35, duration: 1.4 },
+];
 
 export default function LoadingScreen() {
   return (
@@ -81,6 +88,32 @@ export default function LoadingScreen() {
             "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.7'/></svg>\")",
         }}
       />
+
+      {/* ── Floating sparkles for playful motion ── */}
+      {SPARKLES.map((sparkle, i) => (
+        <motion.span
+          key={i}
+          aria-hidden
+          className="pointer-events-none absolute rounded-full"
+          style={{
+            left: sparkle.left,
+            top: sparkle.top,
+            width: sparkle.size,
+            height: sparkle.size,
+            background:
+              'radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(255,210,122,0.65) 35%, rgba(255,106,136,0) 75%)',
+            filter: 'blur(0.2px)',
+          }}
+          initial={{ opacity: 0, scale: 0.1, y: 10 }}
+          animate={{ opacity: [0, 0.85, 0.25, 0], scale: [0.1, 1.15, 0.9, 0.4], y: [10, -4, -11, -16] }}
+          transition={{
+            duration: sparkle.duration,
+            delay: sparkle.delay,
+            repeat: 1,
+            ease: 'easeInOut',
+          }}
+        />
+      ))}
 
       {/* ── Center stage ── */}
       <div className="relative flex flex-col items-center">
@@ -149,9 +182,25 @@ export default function LoadingScreen() {
         <motion.div
           className="relative mt-8 flex items-center justify-center"
           initial={{ opacity: 0, scale: 0.72, filter: 'blur(8px)' }}
-          animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+          animate={{ opacity: 1, scale: [1, 1.05, 1], filter: 'blur(0px)' }}
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 1.2 }}
         >
+          <motion.div
+            aria-hidden
+            className="absolute rounded-full border border-cream/25"
+            style={{ width: 124, height: 124 }}
+            initial={{ opacity: 0, scale: 0.88, rotate: -5 }}
+            animate={{ opacity: [0, 0.42, 0.2], scale: [0.88, 1.08, 1], rotate: [-5, 10, 24] }}
+            transition={{ duration: 1.4, delay: 1.3, ease: 'easeOut' }}
+          />
+          <motion.div
+            aria-hidden
+            className="absolute rounded-full border border-cream/20"
+            style={{ width: 154, height: 154 }}
+            initial={{ opacity: 0, scale: 0.78, rotate: 12 }}
+            animate={{ opacity: [0, 0.34, 0.12], scale: [0.78, 1.04, 1], rotate: [12, -8, -18] }}
+            transition={{ duration: 1.6, delay: 1.38, ease: 'easeOut' }}
+          />
           <div
             aria-hidden
             className="absolute rounded-full"
@@ -163,12 +212,15 @@ export default function LoadingScreen() {
               filter: 'blur(30px)',
             }}
           />
-          <img
+          <motion.img
             src={logoUrl}
             alt=""
             draggable={false}
             className="relative h-16 w-16 select-none rounded-full md:h-20 md:w-20"
             style={{ filter: 'drop-shadow(0 0 14px rgba(255,138,76,0.6))' }}
+            initial={{ rotate: -6 }}
+            animate={{ rotate: [-6, 5, 0], y: [2, -2, 0] }}
+            transition={{ duration: 0.9, delay: 1.24, ease: [0.22, 1, 0.36, 1] }}
           />
         </motion.div>
 
@@ -195,6 +247,18 @@ export default function LoadingScreen() {
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
           transition={{ duration: SPLASH_MS / 1000 - 0.1, ease: 'linear', delay: 0.05 }}
+        />
+        <motion.div
+          aria-hidden
+          className="absolute inset-0"
+          style={{
+            background:
+              'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.85) 48%, transparent 100%)',
+            mixBlendMode: 'screen',
+          }}
+          initial={{ x: '-120%' }}
+          animate={{ x: ['-120%', '120%'] }}
+          transition={{ duration: 0.95, delay: 1.35, repeat: 1, ease: 'easeInOut' }}
         />
       </div>
     </motion.div>
