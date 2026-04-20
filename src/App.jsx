@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import LoadingScreen from './components/LoadingScreen.jsx';
 import Navbar from './components/Navbar.jsx';
 import CustomCursor from './components/CustomCursor.jsx';
+import Sol from './components/chatbot/Sol.jsx';
 import Home from './pages/Home.jsx';
 import Events from './pages/Events.jsx';
 import News from './pages/News.jsx';
@@ -52,6 +53,7 @@ function SiteShell() {
         <Navbar />
         <ScrollManager />
         <AnimatedRoutes />
+        <Sol />
       </motion.main>
 
       <AnimatePresence>{loading && <LoadingScreen />}</AnimatePresence>

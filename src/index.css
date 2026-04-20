@@ -228,6 +228,15 @@ summary,
   animation: shimmer-slow 9s ease-in-out infinite;
 }
 
+/* ---------- Sol launcher halo ----------
+   Slow breathing ring around the chatbot FAB. Kept in a keyframe (not
+   inline `animate-ping`) so the pulse is gentle — Tailwind's ping is
+   too abrupt for an ambient presence. */
+@keyframes sol-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.35; }
+  50%      { transform: scale(1.35); opacity: 0; }
+}
+
 /* ---------- Route transition ----------
    Applied to the keyed wrapper in AnimatedRoutes so every page
    remount fades + lifts in. Keeps the swap from feeling snappy. */
