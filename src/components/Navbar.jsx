@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import { useHoverCursor } from './CustomCursor.jsx';
+import MusicToggle from './MusicToggle.jsx';
 import logoUrl from '../assets/medwell-logo.png';
 
 const INSTAGRAM_URL = 'https://www.instagram.com/medwell.at.ucsd/';
@@ -109,6 +110,7 @@ export default function Navbar() {
             >
               <LinktreeIcon />
             </a>
+            <MusicToggle />
 
             <a
               {...joinHover}
