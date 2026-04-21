@@ -19,6 +19,8 @@ import { CursorProvider, useCursor } from './context/CursorContext.jsx';
  */
 const SPLASH_MS = 2600;
 const BASENAME = import.meta.env.BASE_URL.replace(/\/$/, '');
+/** Place this file in `public/` (same name as your download). */
+const BACKGROUND_MUSIC_FILE = 'lofi_music_library-chill-lofi-ambient-lofi-music-457259.mp3';
 
 function SiteShell() {
   const [loading, setLoading] = useState(true);
@@ -109,7 +111,11 @@ function BackgroundMusic() {
 
   return (
     <>
-      <audio ref={audioRef} src={`${import.meta.env.BASE_URL}background-music.mp3`} preload="auto" />
+      <audio
+        ref={audioRef}
+        src={`${import.meta.env.BASE_URL}${BACKGROUND_MUSIC_FILE}`}
+        preload="auto"
+      />
       <button
         type="button"
         onClick={() => setEnabled((current) => !current)}
