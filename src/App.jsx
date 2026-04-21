@@ -1,8 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import LoadingScreen from './components/LoadingScreen.jsx';
-import BackgroundMusic from './components/BackgroundMusic.jsx';
 import Navbar from './components/Navbar.jsx';
 import CustomCursor from './components/CustomCursor.jsx';
 import Sol from './components/chatbot/Sol.jsx';
@@ -45,7 +44,6 @@ function SiteShell() {
   return (
     <>
       <CustomCursor />
-      <BackgroundMusic />
 
       <motion.main
         initial={{ opacity: 0 }}
@@ -60,65 +58,6 @@ function SiteShell() {
       </motion.main>
 
       <AnimatePresence>{loading && <LoadingScreen />}</AnimatePresence>
-    </>
-  );
-}
-
-function BackgroundMusic() {
-  const audioRef = useRef(null);
-  const [enabled, setEnabled] = useState(true);
-
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) {
-      return undefined;
-    }
-
-    audio.volume = 0.35;
-    audio.loop = true;
-
-    const attemptPlay = () => {
-      if (!enabled) {
-        return;
-      }
-      audio.play().catch(() => {
-        // Browsers can block autoplay until the first user interaction.
-      });
-    };
-
-    attemptPlay();
-    window.addEventListener('pointerdown', attemptPlay, { once: true });
-
-    return () => {
-      window.removeEventListener('pointerdown', attemptPlay);
-    };
-  }, [enabled]);
-
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) {
-      return;
-    }
-    if (enabled) {
-      audio.play().catch(() => {
-        // Ignore autoplay restriction errors.
-      });
-      return;
-    }
-    audio.pause();
-  }, [enabled]);
-
-  return (
-    <>
-      <audio ref={audioRef} src={`${import.meta.env.BASE_URL}background-music.mp3`} preload="auto" />
-      <button
-        type="button"
-        onClick={() => setEnabled((current) => !current)}
-        aria-label={enabled ? 'Mute background music' : 'Play background music'}
-        className="fixed bottom-5 right-5 z-50 rounded-full border border-white/20 bg-black/45 px-3 py-2 text-xs font-medium uppercase tracking-wide text-white backdrop-blur transition hover:bg-black/65"
-      >
-        {enabled ? 'Music: On' : 'Music: Off'}
-      </button>
     </>
   );
 }
