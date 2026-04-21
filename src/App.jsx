@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import LoadingScreen from './components/LoadingScreen.jsx';
+import BackgroundMusic from './components/BackgroundMusic.jsx';
 import Navbar from './components/Navbar.jsx';
 import CustomCursor from './components/CustomCursor.jsx';
 import Sol from './components/chatbot/Sol.jsx';
